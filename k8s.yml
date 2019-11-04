@@ -1,0 +1,59 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: grpc-test-server
+  namespace: grpctest
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: grpc-test-server
+  namespace: grpctest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grpc-test-server
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      creationTimestamp: null
+      labels:
+        app: grpc-test-server
+    spec:
+      containers:
+        - env:
+            - name: GRPC_PORT
+              value: "8080"
+          image: grpc-test-server:latest
+          imagePullPolicy: IfNotPresent
+          name: grpc-test-server
+          ports:
+            - containerPort: 8080
+              name: grpc
+            - containerPort: 8888
+              name: http
+      serviceAccountName: grpc-test-server
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-test-server
+  namespace: grpctest
+spec:
+  type: LoadBalancer
+  selector:
+    app: grpc-test-server
+  ports:
+    - name: grpc
+      port: 8080
+      targetPort: 8080
+    - name: http
+      port: 8888
+      targetPort: 8888

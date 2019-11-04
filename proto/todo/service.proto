@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package todo;
+// option go_package="github.com/dmitrymomot/grpc-dart-test";
+
+// import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+
+service ToDoService {
+    rpc List (ListReq) returns (ListResp) {}
+    rpc Get(GetReq) returns (ToDo){}
+    rpc Create(CreateReq) returns (ToDo){}
+    rpc Update(UpdateReq) returns (ToDo){}
+    rpc Delete(DeleteReq) returns (DeleteResp){}
+}
+
+message ToDo {
+    string id = 1;
+    string text = 2;
+    bool completed = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}
+
+message ListReq {}
+
+message ListResp {
+    repeated ToDo items = 1;
+}
+
+message GetReq {
+    string id = 1;
+}
+
+message CreateReq {
+    string text = 2;
+}
+
+message UpdateReq {
+    string id = 1;
+    string text = 2;
+    bool completed = 3;
+}
+
+message DeleteReq {
+    string id = 1;
+}
+
+message DeleteResp {
+    bool result = 1;
+}
