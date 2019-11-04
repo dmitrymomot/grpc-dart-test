@@ -12,3 +12,5 @@
 *.out
 
 /app
+.DS_Store
+*.zip
